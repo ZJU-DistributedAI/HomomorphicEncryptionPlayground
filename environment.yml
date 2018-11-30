@@ -1,0 +1,8 @@
+name: homomorphic-encryption-playground
+
+dependencies:
+  - python=2.7
+  - numpy
+  - matplotlib
+  - pandas
+  - tensorflow
