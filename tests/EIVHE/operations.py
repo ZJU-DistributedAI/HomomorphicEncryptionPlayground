@@ -61,7 +61,7 @@ class TestOperationMethods(unittest.TestCase):
         t = np.matrix(t)
         correct_result = x + y
         print('Testing {} + {}, should equal to {}'.format(x, y, correct_result))
-        s0 = self.eivhe.naive_encrypt_secret(w, x)
+        s0 = self.eivhe.naive_encrypt_secret(w, x.size)
         x0 = x
         y0 = y
         # Key switching
@@ -85,7 +85,7 @@ class TestOperationMethods(unittest.TestCase):
         correct_result = np.squeeze(np.array(g.dot(x)))
         print('Testing {} linear transform {}, should equal to {}'.format(g, x, correct_result))
         # Encrypt x
-        s0 = self.eivhe.naive_encrypt_secret(w, x)
+        s0 = self.eivhe.naive_encrypt_secret(w, x.size)
         x0 = x
         # Key switching for x
         s1 = self.eivhe.key_switching_get_secret(t)
@@ -114,9 +114,9 @@ class TestOperationMethods(unittest.TestCase):
         print(
             'Testing weighted dot product x1: {}, h: {}, x2: {}, should equal to: {}'.format(x1, h, x2, correct_result))
         # Encrypt x1, x2
-        x1s0 = self.eivhe.naive_encrypt_secret(w, x1)
+        x1s0 = self.eivhe.naive_encrypt_secret(w, x1.size)
         x1c0 = x1
-        x2s0 = self.eivhe.naive_encrypt_secret(w, x2)
+        x2s0 = self.eivhe.naive_encrypt_secret(w, x2.size)
         x2c0 = x2
         # Key switching for x1 x2
         s1 = self.eivhe.key_switching_get_secret(t1)

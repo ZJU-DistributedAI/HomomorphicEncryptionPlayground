@@ -20,15 +20,12 @@ def matrix_to_vector(matrix):
     check_is_matrix(matrix)
     return matrix.getA1()
 
+
 def vector_to_matrix(vector, row, col):
     check_is_vector(vector)
     return np.matrix(np.reshape(vector, (row, col)))
 
 
-# Random matrix, |matrix| <= 1
+# Random matrix
 def generate_random_matrix(row, col, bound):
-    result = np.zeros((row, col))
-    for i in range(row):
-        for j in range(col):
-            result[i][j] = np.random.randint(bound)
-    return np.matrix(result)
+    return np.matrix(np.random.randint(bound, size=(row, col)))

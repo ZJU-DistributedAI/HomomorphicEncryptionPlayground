@@ -47,7 +47,7 @@ class TestEncryptionMethods(unittest.TestCase):
         x = np.array([1, 1, 1, 1])
         w = np.int64(1000)
         # Naively create s and c
-        s0 = self.eivhe.naive_encrypt_secret(w, x)
+        s0 = self.eivhe.naive_encrypt_secret(w, x.size)
         c0 = x
         np.testing.assert_equal(self.eivhe.decrypt(s0, c0, w), x)
         # Key switching, s0c0 = s1c1
