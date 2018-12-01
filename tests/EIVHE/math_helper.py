@@ -1,6 +1,5 @@
 import unittest
 
-from playground.EIVHE.eivhe_helper import encrypt, decrypt, key_switching
 from playground.EIVHE.math_helper import *
 
 matrix_a = np.matrix([[1, 1], [1, 1]])
@@ -27,21 +26,17 @@ class TestHelpersMethods(unittest.TestCase):
             matrix_to_vector(matrix_c),
             np.array([1, 2, 3, 4]))
 
+    def test_vector_to_matrix(self):
+        np.testing.assert_equal(
+            vector_to_matrix(np.array([1, 2, 3, 4, 5, 6]), 2, 3),
+            np.matrix([[1, 2, 3], [4, 5, 6]])
+        )
+
     def test_generate_random_matrix(self):
         matrix_generated = generate_random_matrix(2, 3, 2)
         self.assertEqual(matrix_generated.shape, (2, 3))
         self.assertEqual(np.max(matrix_generated), 1)
         self.assertTrue(isinstance(matrix_generated, np.matrix))
-
-
-    def test_homomorphic_encryption(self):
-        x = np.array([1,2,3,4])
-        w = np.int64(1000)
-        t = np.matrix([[4],[4],[4],[4]])
-        secret_cipher = encrypt(x, w, t)
-        secret_cipher = key_switching(secret_cipher, np.matrix([[5],[5],[4],[5]]))
-        print(decrypt(secret_cipher.secret, secret_cipher.cipher, w))
-
 
 
 if __name__ == '__main__':

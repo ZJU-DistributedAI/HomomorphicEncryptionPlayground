@@ -16,16 +16,13 @@ def vertical_cat(matrix_a, matrix_b):
 
 
 # vectorized a matrix
-# note that this vector is vertical
 def matrix_to_vector(matrix):
     check_is_matrix(matrix)
-    n_rows = matrix.shape[0]
-    n_cols = matrix.shape[1]
-    result = np.zeros(matrix.size)
-    for i in range(n_rows):
-        for j in range(n_cols):
-            result[i * n_rows + j] = matrix[i, j]
-    return result
+    return matrix.getA1()
+
+def vector_to_matrix(vector, row, col):
+    check_is_vector(vector)
+    return np.matrix(np.reshape(vector, (row, col)))
 
 
 # Random matrix, |matrix| <= 1
