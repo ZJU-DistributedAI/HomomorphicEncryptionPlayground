@@ -1,5 +1,7 @@
 import numpy as np
 
+from playground.EIVHE.math_helper import exponential
+
 
 class Layer(object):
     def forward(self, x):
@@ -25,17 +27,18 @@ class LinearLayer(Layer):
     def backward(self, learning_rate, y, x, *arg):
         output_grad = arg[0]
         input_grad = output_grad.dot(self.w.T)
-        dw = x.T.dot(output_grad)
-        db = np.sum(output_grad, axis=0)
+        dw = x.reshape(-1, 1).dot(output_grad.reshape(1, -1))
+        db = np.sum(output_grad)
         self.w = self.w - learning_rate * dw
         self.b = self.b - learning_rate * db
         return input_grad
 
 
+# https://stats.stackexchange.com/questions/235528/backpropagation-with-softmax-cross-entropy
 class SoftmaxOutputLayer(Layer):
+
     def forward(self, x):
-        x_norm = (x.T - np.max(x, axis=1)).T
-        return np.exp(x_norm) / np.sum(np.exp(x_norm), axis=1, keepdims=True)
+        return exponential(x) / np.sum(exponential(x))
 
     def backward(self, learning_rate, y, x, *arg):
         t = arg[0]

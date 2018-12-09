@@ -1,6 +1,13 @@
 import numpy as np
 
 
+def check_is_integer(integer):
+    if isinstance(integer, np.int64):
+        return
+    else:
+        raise ValueError("must be np.int64 integer")
+
+
 def check_is_vector(vector):
     if isinstance(vector, np.ndarray) and len(vector.shape) == 1:
         return

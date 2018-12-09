@@ -28,4 +28,8 @@ def vector_to_matrix(vector, row, col):
 
 # Random matrix
 def generate_random_matrix(row, col, bound):
-    return np.matrix(np.random.randint(bound, size=(row, col)))
+    return np.matrix(np.random.randint(-bound, bound, size=(row, col))).astype(np.int64)
+
+
+def exponential(x):
+    return 1. + x + x*x/2. + x*x*x/6.

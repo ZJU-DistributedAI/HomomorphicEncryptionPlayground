@@ -16,3 +16,8 @@ def backward_step(activations, targets, layers, learning_rate):
 def perform_training(layers, batch_xs, batch_ys, learning_rate):
     activations = forward_step(batch_xs, layers)
     backward_step(activations, batch_ys, layers, learning_rate)
+
+
+
+
+
