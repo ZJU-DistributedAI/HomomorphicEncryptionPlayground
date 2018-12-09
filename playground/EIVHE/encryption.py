@@ -100,7 +100,6 @@ class Encryption:
         return np.array(np.divide(cipher, np.float64(number))).round().astype(np.int64)
 
     def weighted_inner_product(self, cipher1, h, cipher2):
-        h_scaled = np.multiply(h, self.scale).round().astype(np.int64)
         # On Client, note that result always has dimension 1.
         secret1 = self.get_s(len(cipher1) - 1)
         secret2 = self.get_s(len(cipher2) - 1)
@@ -122,21 +121,25 @@ class Encryption:
         cipher = self.encryption_core.key_switching_get_cipher(gt_cipher, gs, t)
         return cipher
 
+    @staticmethod
+    def one_hot_transform(number_cipher, total_elements, element_index):
+        result = np.append(np.zeros(element_index), number_cipher)
+        result = np.append(result, np.zeros(total_elements - element_index - 1))
+        return result
+
     def transpose(self, encrypted_matrix):
         encrypted_matrix = np.array(encrypted_matrix)
         n_rows = encrypted_matrix.shape[0]
         n_cols = encrypted_matrix.shape[1] - 1
         eye_n_cols = np.eye(n_cols)
         encrypted_eye_n_cols = np.array(self.encrypt_matrix(eye_n_cols))
-        eye_n_rows = np.eye(n_rows)
         transpose = []
         for col in range(n_cols):
             new_row_after_transpose = np.zeros(n_rows + 1)
             encrypted_one_hot_n_col = encrypted_eye_n_cols[col]
             for row in range(n_rows):
                 cipher_scalar = self.weighted_inner_product(encrypted_matrix[row], eye_n_cols, encrypted_one_hot_n_col)
-                one_hot_n_rows = eye_n_rows[row]
-                new_row_after_transpose += self.linear_transform(one_hot_n_rows.reshape(-1, 1), cipher_scalar)
+                new_row_after_transpose += self.one_hot_transform(cipher_scalar, n_rows, row)
             transpose.append(new_row_after_transpose)
         return np.array(transpose)
 
@@ -157,7 +160,7 @@ class Encryption:
         eye = np.array(np.eye(number_of_elements))
         result = np.zeros(number_of_elements + 1)
         for i in range(number_of_elements):
-            result += self.linear_transform(eye[i].reshape(-1, 1), cipher_list[i])
+            result += self.one_hot_transform(cipher_list[i], number_of_elements, i)
         return result
 
     def exponential_vector(self, vector):
@@ -181,7 +184,7 @@ class Encryption:
         for i in range(number_of_elements):
             cipher_scalar = self.weighted_inner_product(vector, eye, eye_encrypted[i])
             cipher_exponential = self.exponential(cipher_scalar)
-            result += self.linear_transform(eye[i].reshape(-1, 1), cipher_exponential)
+            result += self.one_hot_transform(cipher_exponential, number_of_elements, i)
             exponential_sum += cipher_exponential
 
         one = self.encrypt_number(1)
@@ -198,6 +201,6 @@ class Encryption:
         return np.array(result)
 
     def sum(self, vector_cipher):
-        number_of_elements = len(vector_cipher)-1
+        number_of_elements = len(vector_cipher) - 1
         ones = self.encrypt_vector(np.ones(number_of_elements))
         return self.weighted_inner_product(vector_cipher, np.eye(number_of_elements), ones)

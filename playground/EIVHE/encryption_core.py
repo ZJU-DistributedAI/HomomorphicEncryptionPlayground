@@ -2,8 +2,6 @@ import time
 from playground.EIVHE.math_helper import *
 from playground.EIVHE.type_check import *
 import numpy as np
-import pickle
-import os.path
 
 
 # sc = wx + e, where:
@@ -28,6 +26,7 @@ class EncryptionCore:
         self.a_bound = a_bound
         self.e_bound = e_bound
         self.times_by = np.array([2 ** (self.number_of_bits - x - 1) for x in range(self.number_of_bits)])
+        self.largest_integer_after_encryption = 0
         print('Finished pre processing in EIVHE within {} seconds'.format(time.time() - start_time))
         
     # key switching:
@@ -108,7 +107,10 @@ class EncryptionCore:
     def key_switching_get_cipher_from_switching_matrix(self, c, m):
         c_star = self._compute_c_star(c)
         result = self._compute_new_c(m, c_star)
-        print('Largest integer element after encryption {}'.format(np.max(result)))
+        largest_element = np.max(np.abs(result))
+        if largest_element > self.largest_integer_after_encryption:
+            self.largest_integer_after_encryption = largest_element
+            print('Largest integer element after encryption {}'.format(self.largest_integer_after_encryption))
         return result
 
     def key_switching_get_secret(self, t):

@@ -22,7 +22,7 @@ if __name__ == '__main__':
     batch_size = 1
     global_sorted_indices = random.sample(range(55000), 11000)
     result = []
-    settings = [(40, 0.01, True)]
+    settings = [(40, 0.01)]
 
     data_set = input_data.read_data_sets(os.getcwd() + "/MNIST_data/", one_hot=True)  # use for training.
     eval_train_images = data_set.train.images[global_sorted_indices]
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     eval_test_labels = data_set.test.labels
 
     print('Starts training simple mnist')
-    for (num_of_batches, learning_rate, secure) in settings:
+    for (num_of_batches, learning_rate) in settings:
         # Define model, loss, update and evaluation metric.
 
         # Train.

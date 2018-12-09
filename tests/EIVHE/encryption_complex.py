@@ -145,3 +145,15 @@ class TestEncryptionComplex(unittest.TestCase):
         decrypted = self.encryption.decrypt_matrix(result)
         np.testing.assert_almost_equal(decrypted, expected)
         print(decrypted, expected)
+
+    @for_examples(
+        (0.1, [0.1, 0, 0], 3, 0),
+        (0.1, [0, 0.1, 0], 3, 1),
+        (0.1, [0, 0, 0.1], 3, 2)
+    )
+    def test_one_hot_transform(self, original, expected, total_elements, element_index):
+        expected = np.array(expected)
+        cipher_original = self.encryption.encrypt_number(original)
+        transformed = self.encryption.one_hot_transform(cipher_original, total_elements, element_index)
+        decrypted = self.encryption.decrypt_vector(transformed)
+        np.testing.assert_almost_equal(decrypted, expected)
