@@ -1,25 +1,16 @@
 import numpy as np
 
-from playground.EIVHE.math_helper import exponential
-
-
-class Layer(object):
-    def forward(self, x):
-        pass
-
-    def backward(self, learning_rate, y, x, *arg):
-        pass
-
-    @staticmethod
-    def xavier_activation(dimension):
-        boundary = np.sqrt(6. / sum(list(dimension)))
-        return np.random.uniform(-boundary, boundary, dimension)
+from EIVHE.math_helper import exponential
+from EIVHE.safe_nn.layer import Layer
 
 
 class LinearLayer(Layer):
     def __init__(self, n_in, n_out):
         self.w = Layer.xavier_activation((n_in, n_out))
         self.b = Layer.xavier_activation((n_out,))
+
+    def simple_forward(self, x):
+        return self.forward(x)
 
     def forward(self, x):
         return x.dot(self.w) + self.b
@@ -34,8 +25,21 @@ class LinearLayer(Layer):
         return input_grad
 
 
+class ReluLayer(Layer):
+    def simple_forward(self, x):
+        return self.forward(x)
+
+    def forward(self, x):
+        return np.maximum(x, 0.)
+
+    def backward(self, learning_rate, y, x, *arg):
+        return np.multiply(np.greater(y, 0.), arg[0])
+
+
 # https://stats.stackexchange.com/questions/235528/backpropagation-with-softmax-cross-entropy
 class SoftmaxOutputLayer(Layer):
+    def simple_forward(self, x):
+        return self.forward(x)
 
     def forward(self, x):
         return exponential(x) / np.sum(exponential(x))
