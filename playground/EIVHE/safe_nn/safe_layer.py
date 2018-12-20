@@ -22,20 +22,6 @@ class SafeLinearLayer(Layer):
     def backward(self, learning_rate, _, c_x, *arg):
         print('performing linear backward')
         c_output_grad = np.array(arg[0])  # (11,)
-
-        # Too slow
-
-        # print('compute c_x, {}'.format(c_x.shape))
-        # c_x = self.enc.transpose(np.array([c_x]))
-        # print('compute c_output_grad')
-        # c_output_grad = np.array([c_output_grad])
-        # print('compute c_dw')
-        # c_dw = self.enc.outer_product(c_x, c_output_grad)
-        # print('compute c_db')
-        # c_db = self.enc.sum(c_output_grad)
-        # self.w = self.w - learning_rate * self.enc.decrypt_matrix(c_dw)
-        # self.b = self.b - learning_rate * self.enc.decrypt_vector(c_db)
-
         x = self.enc.decrypt_vector(c_x)
         output_grad = self.enc.decrypt_vector(c_output_grad)
         dw = x.reshape(-1, 1).dot(output_grad.reshape(1, -1))

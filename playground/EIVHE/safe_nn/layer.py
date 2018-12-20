@@ -11,6 +11,12 @@ class Layer(object):
     def backward(self, learning_rate, y, x, *arg):
         pass
 
+    def explore(self, settings):
+        pass
+
+    def mutate(self, settings):
+        pass
+
     @staticmethod
     def xavier_activation(dimension):
         boundary = np.sqrt(6. / sum(list(dimension)))
