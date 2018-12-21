@@ -4,10 +4,9 @@ from EIVHE.math_helper import exponential
 from EIVHE.safe_nn.layer import Layer
 
 
-def mutate_array(weight, mutation):
+def mutate_array(weight, mutation_probability):
     shape = np.shape(weight)
-    # scale = np.max(np.absolute(weight))
-    mutation = np.random.choice([-1, 1], size=shape, p=[mutation, 1 - mutation])
+    mutation = np.random.choice([-1, 1], size=shape, p=[mutation_probability, 1 - mutation_probability])
     return np.multiply(weight, mutation)
 
 
@@ -32,15 +31,13 @@ class LinearLayer(Layer):
         self.b = self.b - learning_rate * db
         return input_grad
 
-    def explore(self, settings):
-        sigma = settings['sigma']
+    def explore(self, sigma):
         self.w += np.random.normal(0, 1 * sigma, self.w.shape)
         self.b += np.random.normal(0, 1 * sigma, self.b.shape)
 
-    def mutate(self, settings):
-        mutation = settings['mutation']
-        self.w = mutate_array(self.w, mutation)
-        self.b = mutate_array(self.b, mutation)
+    def mutate(self, mutation_probability):
+        self.w = mutate_array(self.w, mutation_probability)
+        self.b = mutate_array(self.b, mutation_probability)
 
 
 class ReluLayer(Layer):

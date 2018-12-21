@@ -37,39 +37,46 @@ def backward_step(activations, targets, layers, learning_rate):
         parameter = layer.backward(learning_rate, y, x, parameter)
 
 
-def perform_training(layers, batch_xs, batch_ys, learning_rate):
+def perform_simple_training(layers, batch_xs, batch_ys, settings):
+    learning_rate = settings['simple_training_params']['learning_rate']
     activations = forward_step(batch_xs, layers)
     backward_step(activations, batch_ys, layers, learning_rate)
 
 
 # The explore step for Genetic Algorithm
-def explore(layers, settings):
+def explore(layers, sigma):
     for layer in layers:
-        layer.explore(settings)
+        layer.explore(sigma)
 
 
 # The mutate step for Genetic Algorithm
-def mutate(layers, settings):
+def mutate(layers, mutation_probability):
     for layer in layers:
-        layer.mutate(settings)
+        layer.mutate(mutation_probability)
 
 
-def perform_genetic_algorithm_training(layers_candidates, batch_xs, batch_ys, settings):
+def perform_genetic_algorithm_training(candidates, batch_xs, batch_ys, settings):
+    population_size = settings['genetic_algorithm_params']['population']
+    parents_size = settings['genetic_algorithm_params']['parents']
+    sigma = settings['genetic_algorithm_params']['sigma']
+    mutation_probability = settings['genetic_algorithm_params']['mutation_probability']
     cost_list = []
-    for layers in layers_candidates:
-        activations = forward_step(batch_xs, layers)
+
+    for model in candidates:
+        activations = forward_step(batch_xs, model)
         predicted_result = activations[-1]
         cost = np.sum(np.absolute(np.subtract(batch_ys, predicted_result)))
         cost_list.append(cost)
     arg_sort = np.argsort(cost_list)
 
     # Elitism: the best candidate will always be a parent
-    new_candidates = [layers_candidates[arg_sort[i]] for i in range(settings['parents'])]
+    # Add all parents to candidates, sorted by performance
+    new_candidates = [candidates[arg_sort[i]] for i in range(parents_size)]
 
-    # Subtract 1 here because the top 1 candidate is already in new candidate list
-    for _ in range(settings['population'] - settings['parents']):
-        parent = copy.deepcopy(random.choice(new_candidates[:settings['parents']]))
-        explore(parent, settings)
-        mutate(parent, settings)
+    # Fill the remaining slots by (randomly generated) new candidates
+    for _ in range(population_size - parents_size):
+        parent = copy.deepcopy(random.choice(new_candidates[:parents_size]))
+        explore(parent, sigma)
+        mutate(parent, mutation_probability)
         new_candidates.append(parent)
     return new_candidates
