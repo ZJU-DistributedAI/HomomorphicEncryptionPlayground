@@ -27,14 +27,14 @@ class HomomorphicEncryptionLayer(Layer):
     def __init__(self, encryption):
         self.enc = encryption
 
-    def simple_forward(self, x):
-        return x
+    def simple_forward(self, xs):
+        return xs
 
-    def forward(self, x):
-        return self.enc.encrypt_vector(x)
+    def forward(self, xs):
+        return self.enc.encrypt_matrix(xs)
 
     def backward(self, learning_rate, y, x, *arg):
-        return self.enc.decrypt_vector(arg[0])
+        return self.enc.decrypt_matrix(arg[0])
 
 
 class HomomorphicDecryptionLayer(Layer):
@@ -44,8 +44,8 @@ class HomomorphicDecryptionLayer(Layer):
     def simple_forward(self, x):
         return x
 
-    def forward(self, x):
-        return self.enc.decrypt_vector(x)
+    def forward(self, xs):
+        return self.enc.decrypt_matrix(xs)
 
     def backward(self, learning_rate, y, x, *arg):
-        return self.enc.encrypt_vector(arg[0])
+        return self.enc.encrypt_matrix(arg[0])

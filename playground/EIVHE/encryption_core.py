@@ -110,7 +110,6 @@ class EncryptionCore:
         largest_element = np.max(np.abs(result))
         if largest_element > self.largest_integer_after_encryption:
             self.largest_integer_after_encryption = largest_element
-            print('Largest integer element after encryption {}'.format(self.largest_integer_after_encryption))
         return result
 
     def key_switching_get_secret(self, t):

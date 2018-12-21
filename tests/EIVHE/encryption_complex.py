@@ -49,7 +49,7 @@ unittest.TestCase = TestCaseWithExamples
 
 class TestEncryptionComplex(unittest.TestCase):
     def setUp(self):
-        number_of_bits = 20
+        number_of_bits = 25
         a_bound = np.int64(5)
         e_bound = np.int64(5)
         encryption_core = EncryptionCore(number_of_bits, a_bound, e_bound)
@@ -59,79 +59,80 @@ class TestEncryptionComplex(unittest.TestCase):
         input_range = 1000
         self.encryption = Encryption(encryption_core, w, scale, t_bound, input_range)
 
-    @for_examples(
-        ([1.01], [[1]], [0.01]),
-        ([0.01, 0.02], [[1, 2, 1], [1, 2, 1]], [1, 2, 1])
-    )
-    def test_weighted_inner_product(self, vector1, h, vector2):
-        expected = np.array(vector1).dot(np.array(h)).dot(np.array(vector2)).round(2)
-        c1 = self.encryption.encrypt_vector(vector1)
-        c2 = self.encryption.encrypt_vector(vector2)
-        print(c1, c2)
-        result = self.encryption.weighted_inner_product(c1, h, c2)
-        decrypted = self.encryption.decrypt_number(result)
-        np.testing.assert_equal(decrypted, expected)
+    # @for_examples(
+    #     ([1.01], [[1]], [0.01]),
+    #     ([0.01, 0.02], [[1, 2, 1], [1, 2, 1]], [1, 2, 1])
+    # )
+    # def test_weighted_inner_product(self, vector1, h, vector2):
+    #     expected = np.array(vector1).dot(np.array(h)).dot(np.array(vector2)).round(2)
+    #     c1 = self.encryption.encrypt_vector(vector1)
+    #     c2 = self.encryption.encrypt_vector(vector2)
+    #     print(c1, c2)
+    #     result = self.encryption.weighted_inner_product(c1, h, c2)
+    #     decrypted = self.encryption.decrypt_number(result)
+    #     np.testing.assert_equal(decrypted, expected)
+    #
+    # @for_examples(
+    #     ([[1]], [1]),
+    #     ([[1, 2], [3, 4], [5, 6]], [0.02, 0.03])
+    # )
+    # def test_linear_transform(self, g, vector):
+    #     expected = np.squeeze(np.array(g).dot(np.array(vector)))
+    #     c = self.encryption.encrypt_vector(vector)
+    #     result = self.encryption.linear_transform(np.array(g), c)
+    #     decrypted = self.encryption.decrypt_vector(result)
+    #     np.testing.assert_equal(decrypted, expected)
+    #
+    # @for_examples(
+    #     ([[0.01, 0.02, 0.03], [0.04, 0.05, 0.06]])
+    # )
+    # def test_transpose(self, matrix):
+    #     matrix = np.array(matrix)
+    #     expected = matrix.T
+    #     encrypted = self.encryption.encrypt_matrix(matrix)
+    #     result = self.encryption.transpose(encrypted)
+    #     decrypted = self.encryption.decrypt_matrix(result)
+    #     np.testing.assert_equal(decrypted, expected)
+    #     print(decrypted)
+    #
+    # @for_examples(
+    #     0.01, 0.1, 0
+    # )
+    # def test_exponential(self, number):
+    #     expected = round(exponential(number), 2)
+    #     encrypted = self.encryption.encrypt_number(number)
+    #     result = self.encryption.exponential(encrypted)
+    #     decrypted = self.encryption.decrypt_number(result)
+    #     np.testing.assert_almost_equal(decrypted, expected)
+    #     print(decrypted)
+    #
+    # @for_examples(
+    #     [0.01, 0.01, 0.1]
+    # )
+    # def test_exponential_vector(self, vector):
+    #     vector = np.array(vector)
+    #     expected = exponential(vector).round(2)
+    #     encrypted = self.encryption.encrypt_vector(vector)
+    #     result = self.encryption.exponential_vector(encrypted)
+    #     decrypted = self.encryption.decrypt_vector(result)
+    #     np.testing.assert_almost_equal(decrypted, expected, decimal=1)
+    #
+    # @for_examples(
+    #     ([0.01, 0.01, 0.01]),
+    #     ([0.01, 0.02, 0.03])
+    # )
+    # def test_softmax(self, x):
+    #     x = np.array(x)
+    #     expected = (exponential(x) / np.sum(exponential(x))).round(2)
+    #     encrypted = self.encryption.encrypt_vector(x)
+    #     result = self.encryption.softmax(encrypted)
+    #     decrypted = self.encryption.decrypt_vector(result)
+    #     np.testing.assert_almost_equal(decrypted, expected)
+    #     print(decrypted, expected)
 
     @for_examples(
-        ([[1]], [1]),
-        ([[1, 2], [3, 4], [5, 6]], [0.02, 0.03])
-    )
-    def test_linear_transform(self, g, vector):
-        expected = np.squeeze(np.array(g).dot(np.array(vector)))
-        c = self.encryption.encrypt_vector(vector)
-        result = self.encryption.linear_transform(np.array(g), c)
-        decrypted = self.encryption.decrypt_vector(result)
-        np.testing.assert_equal(decrypted, expected)
-
-    @for_examples(
-        ([[0.01, 0.02, 0.03], [0.04, 0.05, 0.06]])
-    )
-    def test_transpose(self, matrix):
-        matrix = np.array(matrix)
-        expected = matrix.T
-        encrypted = self.encryption.encrypt_matrix(matrix)
-        result = self.encryption.transpose(encrypted)
-        decrypted = self.encryption.decrypt_matrix(result)
-        np.testing.assert_equal(decrypted, expected)
-        print(decrypted)
-
-    @for_examples(
-        0.01, 0.1, 0
-    )
-    def test_exponential(self, number):
-        expected = round(exponential(number), 2)
-        encrypted = self.encryption.encrypt_number(number)
-        result = self.encryption.exponential(encrypted)
-        decrypted = self.encryption.decrypt_number(result)
-        np.testing.assert_almost_equal(decrypted, expected)
-        print(decrypted)
-
-    @for_examples(
-        [0.01, 0.01, 0.1]
-    )
-    def test_exponential_vector(self, vector):
-        vector = np.array(vector)
-        expected = exponential(vector).round(2)
-        encrypted = self.encryption.encrypt_vector(vector)
-        result = self.encryption.exponential_vector(encrypted)
-        decrypted = self.encryption.decrypt_vector(result)
-        np.testing.assert_almost_equal(decrypted, expected, decimal=1)
-
-    @for_examples(
-        ([0.01, 0.01, 0.01]),
-        ([0.01, 0.02, 0.03])
-    )
-    def test_softmax(self, x):
-        x = np.array(x)
-        expected = (exponential(x) / np.sum(exponential(x))).round(2)
-        encrypted = self.encryption.encrypt_vector(x)
-        result = self.encryption.softmax(encrypted)
-        decrypted = self.encryption.decrypt_vector(result)
-        np.testing.assert_almost_equal(decrypted, expected)
-        print(decrypted, expected)
-
-    @for_examples(
-        ([[0.1], [0.1]], [[0.1, 0.1]])
+        ([[0.1], [0.1]], [[0.1, 0.1]]),
+        ([[0.1, 0.4], [0.1, 0.2], [0.3, 0.2]], [[0.1, 0.1, 0.4], [0.1, 0.1, 0.6]]),
     )
     def test_outter_product(self, matrix1, matrix2):
         matrix1 = np.array(matrix1)
@@ -146,14 +147,14 @@ class TestEncryptionComplex(unittest.TestCase):
         np.testing.assert_almost_equal(decrypted, expected)
         print(decrypted, expected)
 
-    @for_examples(
-        (0.1, [0.1, 0, 0], 3, 0),
-        (0.1, [0, 0.1, 0], 3, 1),
-        (0.1, [0, 0, 0.1], 3, 2)
-    )
-    def test_one_hot_transform(self, original, expected, total_elements, element_index):
-        expected = np.array(expected)
-        cipher_original = self.encryption.encrypt_number(original)
-        transformed = self.encryption.one_hot_transform(cipher_original, total_elements, element_index)
-        decrypted = self.encryption.decrypt_vector(transformed)
-        np.testing.assert_almost_equal(decrypted, expected)
+    # @for_examples(
+    #     (0.1, [0.1, 0, 0], 3, 0),
+    #     (0.1, [0, 0.1, 0], 3, 1),
+    #     (0.1, [0, 0, 0.1], 3, 2)
+    # )
+    # def test_one_hot_transform(self, original, expected, total_elements, element_index):
+    #     expected = np.array(expected)
+    #     cipher_original = self.encryption.encrypt_number(original)
+    #     transformed = self.encryption.one_hot_transform(cipher_original, total_elements, element_index)
+    #     decrypted = self.encryption.decrypt_vector(transformed)
+    #     np.testing.assert_almost_equal(decrypted, expected)
