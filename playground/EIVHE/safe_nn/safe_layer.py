@@ -26,10 +26,18 @@ class SafeLinearLayer(Layer):
         print('calculating dw')
         c_dw = self.enc.outer_product(self.enc.transpose(c_x), output_grad)
         print('calculating db')
-        c_db = np.sum(output_grad, axis=0) # I am lazy here....
+        c_db = np.sum(output_grad, axis=0)  # I am lazy here....
         self.c_w = self.enc.subtract(self.c_w, self.enc.multiply_scalar(c_dw, learning_rate))
         self.c_b = self.enc.subtract(self.c_b, self.enc.multiply_scalar(c_db, learning_rate))
         return input_grad
+
+    def explore(self, sigma):
+        self.c_w += np.int64(np.round(np.random.normal(0, np.max(self.c_w) * sigma, self.c_w.shape)))
+        self.c_b += np.int64(np.round(np.random.normal(0, np.max(self.c_b) * sigma, self.c_b.shape)))
+
+    def mutate(self, mutation_probability):
+        self.c_w = self.mutate_array(self.c_w, mutation_probability)
+        self.c_b = self.mutate_array(self.c_b, mutation_probability)
 
 
 # https://stats.stackexchange.com/questions/235528/backpropagation-with-softmax-cross-entropy

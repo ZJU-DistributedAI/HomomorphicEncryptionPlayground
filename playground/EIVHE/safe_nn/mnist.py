@@ -1,9 +1,6 @@
 # Import useful libraries.
 import os
-
 from tensorflow.examples.tutorials.mnist import input_data
-import copy
-
 from EIVHE.encryption import Encryption
 from EIVHE.encryption_core import EncryptionCore
 from EIVHE.safe_nn.layer import *
@@ -24,9 +21,9 @@ if __name__ == '__main__':
         },
         # Parameters used for genetic algorithm
         'genetic_algorithm_params': {
-            'population': 100,
-            'parents': 5,
-            'sigma': 0.01,
+            'population': 5,
+            'parents': 1,
+            'sigma': 0.02,
             'mutation_probability': 0.00001
         },
         # Homomorphic encryption related settings
@@ -63,12 +60,12 @@ if __name__ == '__main__':
     model = [
         LinearLayer(784, 32),
         ReluLayer(),
-        LinearLayer(32, 10),
-        SoftmaxOutputLayer()
-        # HomomorphicEncryptionLayer(encryption),
-        # SafeLinearLayer(encryption, 32, 10),
-        # SafeSoftmaxOutputLayer(encryption),
-        # HomomorphicDecryptionLayer(encryption)
+        # LinearLayer(32, 10),
+        # SoftmaxOutputLayer()
+        HomomorphicEncryptionLayer(encryption),
+        SafeLinearLayer(encryption, 32, 10),
+        SafeSoftmaxOutputLayer(encryption),
+        HomomorphicDecryptionLayer(encryption)
     ]
 
     # Create candidates list for GA
