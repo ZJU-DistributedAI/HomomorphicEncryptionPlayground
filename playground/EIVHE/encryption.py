@@ -1,5 +1,3 @@
-import os
-import cPickle as pickle
 from playground.EIVHE.math_helper import *
 
 # This is the encryption class with optimizations
@@ -192,11 +190,12 @@ class Encryption:
         return self.divide_scalar(result, scale)
 
     def outer_product(self, cipher1, cipher2):
-        eye = np.eye(cipher1.shape[0] - 1)
-        cipher1_array = np.array(cipher1)
-        cipher2_array = np.array(self.transpose(cipher2))
-        element_result = [[self.weighted_inner_product(cipher1_row, eye, cipher2_row) for cipher2_row in cipher2_array]
-                          for cipher1_row in cipher1_array]
+        cipher1 = np.array(cipher1)
+        cipher2 = np.array(cipher2)
+        eye = np.eye(cipher1.shape[1] - 1)
+        cipher2_transpose = np.array(self.transpose(cipher2))
+        element_result = [[self.weighted_inner_product(cipher1_row, eye, cipher2_row)
+                           for cipher2_row in cipher2_transpose] for cipher1_row in cipher1]
         result = [self.cipher_list_to_cipher_vector(element_row) for element_row in element_result]
         return np.array(result)
 

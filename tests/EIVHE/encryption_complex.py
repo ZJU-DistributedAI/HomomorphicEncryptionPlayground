@@ -49,7 +49,7 @@ unittest.TestCase = TestCaseWithExamples
 
 class TestEncryptionComplex(unittest.TestCase):
     def setUp(self):
-        number_of_bits = 20
+        number_of_bits = 25
         a_bound = np.int64(5)
         e_bound = np.int64(5)
         encryption_core = EncryptionCore(number_of_bits, a_bound, e_bound)
@@ -131,7 +131,8 @@ class TestEncryptionComplex(unittest.TestCase):
         print(decrypted, expected)
 
     @for_examples(
-        ([[0.1], [0.1]], [[0.1, 0.1]])
+        ([[0.1], [0.1]], [[0.1, 0.1]]),
+        ([[0.1, 0.4], [0.1, 0.2], [0.3, 0.2]], [[0.1, 0.1, 0.4], [0.1, 0.1, 0.6]]),
     )
     def test_outter_product(self, matrix1, matrix2):
         matrix1 = np.array(matrix1)

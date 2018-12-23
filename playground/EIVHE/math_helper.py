@@ -32,4 +32,5 @@ def generate_random_matrix(row, col, bound):
 
 
 def exponential(x):
+    x = np.array(x)
     return 1. + x + x*x/2. + x*x*x/6.
